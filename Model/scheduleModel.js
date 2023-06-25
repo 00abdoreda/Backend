@@ -3,70 +3,56 @@ const startAndEndSchema= new mongoose.schema(
     {
         startTime:{
             type:Date,
-            required:[true,'please enter start time']
+            required:true
         },
         endTime:{
             type:Date,
-            required:[true,'please enter end time']
+            required:true
         }
     }
 )
 
 //create schedule schema
 const scheduleSchema= new mongoose.schema({
-    doctorId:{
+    doctormobile:{
         type:String,
         required:true
     },
     sat:{
         type:Boolean,
-      timee:{
-            type:startAndEndSchema,
-            required:true
-        }
+     
     },
+    sattime:startAndEndSchema,
     sun:{
         type:Boolean,
-        timee:{
-            type:startAndEndSchema,
-            required:true
-        }
+       
     },
+    suntime:startAndEndSchema,
     mon:{
         type:Boolean,
-        timee:{
-            type:startAndEndSchema,
-            required:true
-        }
+       
     },
+    montime:startAndEndSchema,
     tue:{
         type:Boolean,
-        timee:{
-            type:startAndEndSchema,
-            required:true
-        }
+      
     },
+    tuetime:startAndEndSchema,
     wen:{
         type:Boolean,
-        timee:{
-            type:startAndEndSchema,
-            required:true
-        }
+      
     },
+    wentime:startAndEndSchema,
     thu:{
         type:Boolean,
-        timee:{
-            type:startAndEndSchema,
-            required:true
-        }
+       
     },
+    thuime:startAndEndSchema,
     fri:{
         type:Boolean,
-        timee:{
-            type:startAndEndSchema,
-            required:true
-        }
-    }
+      
+    },
+    fritime:startAndEndSchema
 })
 
 
