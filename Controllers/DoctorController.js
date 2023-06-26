@@ -1,11 +1,15 @@
 const doctor=require('../Model/DoctorModel')
 const schedual=require('../Model/scheduleModel')
+const admin = require('../Model/adminModel')
 const path=require("path");
 
 let newaccount=async(req,res)=>{
     res.set("Access-Control-Allow-Origin","*")
-    const std = await doctor.findOne({mobile:req.body.mobile}).exec()
-    if(!std){
+
+    const std = await doctor.findOne({mobile:req.body.mobile,email:req.body.email}).exec()
+    const std2 = await admin.findOne({mobile:req.body.mobile,email:req.body.email}).exec()
+    
+    if(std||std2){
         return res.status(401).send("doctore exist")
     }
     const mybody=req.body
@@ -131,9 +135,20 @@ let updatetimetable=async(req,res)=>{
     res.status(200).send('succsess updating')
 
 }
+let updatetimetableforadmin=async(req,res)=>{
+    const body=req.body
+    const doc=await schedual.findOneAndUpdate({mobile:req.body.mobile},body).exec()
+    if(!doc){
+        return res.status(400).send("notfound")
+
+    }
+    res.status(200).send('succsess updating')
+
+}
+
 let activedoctore=async(req,res)=>{
     const body=req.body
-    const doc=await doctor.findOneAndUpdate({mobile:req.session.user.mobile},{isactive:true}).exec()
+    const doc=await doctor.findOneAndUpdate({mobile:req.body.mobile},{isactive:true}).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
@@ -143,7 +158,7 @@ let activedoctore=async(req,res)=>{
 }
 let dactivedoctore=async(req,res)=>{
     const body=req.body
-    const doc=await doctor.findOneAndUpdate({mobile:req.session.user.mobile},{isactive:false}).exec()
+    const doc=await doctor.findOneAndUpdate({mobile:req.body.mobile},{isactive:false}).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
@@ -152,4 +167,4 @@ let dactivedoctore=async(req,res)=>{
 
 }
 
-module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin}
+module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin,updatetimetableforadmin}
