@@ -48,7 +48,7 @@ const scheduleSchema= new mongoose.Schema({
         type:Boolean,
        
     },
-    thuime:startAndEndSchema,
+    thutime:startAndEndSchema,
     fri:{
         type:Boolean,
       

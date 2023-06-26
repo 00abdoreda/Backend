@@ -111,12 +111,13 @@ app.get('/',(req,res)=>{
     res.send("hello")
 
 })
+const doctorroute=require("./Routes/DoctoreRout")
+app.use('/doctor',doctorroute)
 
   app.use(function (req, res, next) {
     res.status(404).send("Sorry can't find that!");
     });
-    const doctorroute=require("./Routes/DoctoreRout")
-    app.use('/doctore',doctorroute)
+   
 
     const httpServer=http.createServer(app)
 // start the express server

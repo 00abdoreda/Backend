@@ -13,8 +13,9 @@ let newaccount=async(req,res)=>{
         return res.status(401).send("doctore exist")
     }
     const mybody=req.body
+    console.log(mybody)
     const newdoc=new doctor(mybody)
-  await  newdoc.save().then(()=>{
+    newdoc.save().then(()=>{
    
         // res.status(200).send("doctor added successfull")
         /***** */
@@ -60,7 +61,7 @@ const newSchedule = new schedual({
   });
  newSchedule.save().then(()=>{
     res.status(200).send("doctor addes sucsess")
- }).catch(()=>{
+ }).catch((err)=>{
     for(let e in err.errors){
         console.log(err.errors[e].message)
         res.status(400).send("Bad Request2...")
@@ -72,7 +73,7 @@ const newSchedule = new schedual({
 
 
 
-    }).catch(()=>{
+    }).catch((err)=>{
         for(let e in err.errors){
             console.log(err.errors[e].message)
             res.status(400).send("Bad Request...")
