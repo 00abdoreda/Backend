@@ -85,6 +85,14 @@ let getaccount=async(req,res)=>{
     }
     res.status(200).send(doc)
 }
+let getaccountforadmin=async(req,res)=>{
+    const doc=await doctor.findOne({mobile:req.body.mobile}).exec()
+    if(!doc){
+        return res.status(400).send("notfound")
+
+    }
+    res.status(200).send(doc)
+}
 
 let gettimetableforuser=async(req,res)=>{
     const doc=await schedual.findOne({mobile:req.session.user.mobile}).exec()
@@ -144,4 +152,4 @@ let dactivedoctore=async(req,res)=>{
 
 }
 
-module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser}
+module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin}
