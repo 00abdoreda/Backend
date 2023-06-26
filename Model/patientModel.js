@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 
 
 //create patientShcema
-const patientShcema=new mongoose.schema({
+const patientShcema=new mongoose.Schema({
     firstName:{
         type:String,
         required:true,

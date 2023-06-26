@@ -12,7 +12,7 @@ const bcrypt=require("bcrypt")
 const ejs = require('ejs')
 const http = require('http')
 const doctor=require('./Model/DoctorModel')
-const admin=require('./Model/adminModell')
+const admin=require('./Model/adminModel')
 
 // set our application port
 app.set("port", 4009);

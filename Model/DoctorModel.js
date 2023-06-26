@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 
 
 //create shcema for doctor
-const doctorSchema= new mongoose.schema(
+const doctorSchema= new mongoose.Schema(
     {
         firstName:{
             type:String,
@@ -63,6 +63,7 @@ const doctorSchema= new mongoose.schema(
             type:String,
         },
         gender:{
+            type:String,
             enum:["male","female"],
             required:true
         },

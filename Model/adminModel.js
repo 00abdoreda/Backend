@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 
 
 // create adminSchema
-const adminSchema=new mongoose.shcema({
+const adminSchema=new mongoose.Schema({
     firstName:{
         type:String,
         required:true,

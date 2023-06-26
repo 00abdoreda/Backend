@@ -1,6 +1,6 @@
 //create startandend schema
 const mongoose = require('mongoose')
-const startAndEndSchema= new mongoose.schema(
+const startAndEndSchema= new mongoose.Schema(
     {
         startTime:{
             type:Date,
@@ -14,7 +14,7 @@ const startAndEndSchema= new mongoose.schema(
 )
 
 //create schedule schema
-const scheduleSchema= new mongoose.schema({
+const scheduleSchema= new mongoose.Schema({
     doctormobile:{
         type:String,
         required:true
