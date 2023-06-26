@@ -21,7 +21,7 @@ let sessionChecker = (req, res, next) => {
 
 
   //create new account
-  route.post('/newaccount',sessionChecker,doctorcontroller.newaccount)
+  route.post('/newaccount',doctorcontroller.newaccount)
   //get account for user
   route.get('/getaccount',sessionChecker,doctorcontroller.getaccount)
   //get timetable for user

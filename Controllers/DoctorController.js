@@ -91,7 +91,7 @@ let getaccount=async(req,res)=>{
     res.status(200).send(doc)
 }
 let getaccountforadmin=async(req,res)=>{
-    const doc=await doctor.findOne({mobile:req.body.mobile}).exec()
+    const doc=await doctor.findOne({mobile:req.params.mobile}).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
@@ -108,7 +108,7 @@ let gettimetableforuser=async(req,res)=>{
     res.status(200).send(doc)
 }
 let gettimetableforadmin=async(req,res)=>{
-    const doc=await schedual.findOne({mobile:req.body.mobile}).exec()
+    const doc=await schedual.findOne({mobile:req.params.mobile}).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
@@ -138,7 +138,7 @@ let updatetimetable=async(req,res)=>{
 }
 let updatetimetableforadmin=async(req,res)=>{
     const body=req.body
-    const doc=await schedual.findOneAndUpdate({mobile:req.body.mobile},body).exec()
+    const doc=await schedual.findOneAndUpdate({mobile:req.params.mobile},body).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
@@ -149,7 +149,7 @@ let updatetimetableforadmin=async(req,res)=>{
 
 let activedoctore=async(req,res)=>{
     const body=req.body
-    const doc=await doctor.findOneAndUpdate({mobile:req.body.mobile},{isactive:true}).exec()
+    const doc=await doctor.findOneAndUpdate({mobile:req.params.mobile},{isactive:true}).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
@@ -159,7 +159,7 @@ let activedoctore=async(req,res)=>{
 }
 let dactivedoctore=async(req,res)=>{
     const body=req.body
-    const doc=await doctor.findOneAndUpdate({mobile:req.body.mobile},{isactive:false}).exec()
+    const doc=await doctor.findOneAndUpdate({mobile:req.params.mobile},{isactive:false}).exec()
     if(!doc){
         return res.status(400).send("notfound")
 

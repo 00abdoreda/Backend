@@ -113,6 +113,8 @@ app.get('/',(req,res)=>{
 })
 const doctorroute=require("./Routes/DoctoreRout")
 app.use('/doctor',doctorroute)
+const adminroute=require("./Routes/AdminRout")
+app.use('/admin',adminroute)
 
   app.use(function (req, res, next) {
     res.status(404).send("Sorry can't find that!");
