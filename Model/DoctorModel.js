@@ -80,6 +80,10 @@ const doctorSchema= new mongoose.Schema(
         isactive:{
             type:Boolean,
             default:false
+        },
+        rate:{
+            type:Number,
+            required:true
         }
 
 
