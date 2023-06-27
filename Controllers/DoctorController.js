@@ -167,5 +167,13 @@ let dactivedoctore=async(req,res)=>{
     res.status(200).send('succsess updating')
 
 }
+let getallaccount=async(req,res)=>{
+    const doc=await doctor.find().exec()
+    if(!doc){
+        return res.status(400).send("notfound")
 
-module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin,updatetimetableforadmin}
+    }
+    res.status(200).send(doc)
+}
+
+module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin,updatetimetableforadmin,getallaccount}
