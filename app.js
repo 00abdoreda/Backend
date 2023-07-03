@@ -80,8 +80,7 @@ app.post('/login',async(req,res)=>{
       const comparpass = await bcrypt.compare(req.body.password, user.password)
       if (!comparpass) {
         return res.status(403).send("invaild username or password");
-          
-       
+      
     }
     
       req.session.user = user;
@@ -111,6 +110,8 @@ app.get('/',(req,res)=>{
     res.send("hello")
 
 })
+
+//routs mount
 const doctorroute=require("./Routes/DoctoreRout")
 app.use('/doctor',doctorroute)
 const adminroute=require("./Routes/AdminRout")

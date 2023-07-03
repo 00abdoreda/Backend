@@ -12,6 +12,8 @@ let newaccount=async(req,res)=>{
     if(std||std2){
         return res.status(401).send("doctore exist")
     }
+
+    
     const mybody=req.body
     console.log(mybody)
     const newdoc=new doctor(mybody)
@@ -59,6 +61,7 @@ const newSchedule = new schedual({
       endTime: new Date('2023-07-02T17:00:00Z'),
     },
   });
+
  newSchedule.save().then(()=>{
     res.status(200).send("doctor addes sucsess")
  }).catch((err)=>{
@@ -90,6 +93,7 @@ let getaccount=async(req,res)=>{
     }
     res.status(200).send(doc)
 }
+
 let getaccountforadmin=async(req,res)=>{
     const doc=await doctor.findOne({mobile:req.params.mobile}).exec()
     if(!doc){
@@ -107,6 +111,7 @@ let gettimetableforuser=async(req,res)=>{
     }
     res.status(200).send(doc)
 }
+
 let gettimetableforadmin=async(req,res)=>{
     const doc=await schedual.findOne({mobile:req.params.mobile}).exec()
     if(!doc){

@@ -33,6 +33,7 @@ let newaccount=async(req,res)=>{
     })
 
 }
+
 let getaccount=async(req,res)=>{
     const doc=await patientmodel.findOne({mobile:req.params.mobile}).exec()
     if(!doc){

@@ -4,10 +4,7 @@ const validateEmail = (email)=> {
     return valid.test(email)
 };
 const mongoose = require('mongoose')
-
 const bcrypt=require('bcrypt')
-
-
 
 
 //create shcema for doctor
