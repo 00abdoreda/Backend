@@ -62,7 +62,7 @@ let updateaccount=async(req,res)=>{
 
 }
 let deleteaccount=async(req,res)=>{
-    const doc=await patientmodel.findByIdAndUpdate(req.params.id).exec()
+    const doc=await patientmodel.findByIdAndDelete(req.params.id).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
