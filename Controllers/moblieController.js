@@ -203,6 +203,35 @@ const date=new Date(nextDate);
 
 
 
+//@desc showBooking for patient
+let showBooking=async(req,res)=>{
+   
+    const show=await bookDocModel.find({mobilePat:req.params.mobilePat}).sort({date:-1}).exec()
+    if(!show){
+        return res.status(404).send("not found")
+    }
+    res.status(200).send(show)
+   
+}
 
 
-module.exports={newaccount,login,getDoctors};
+//@desc update account
+let updateaccount=async(req,res)=>{
+    const body=req.body
+    const doc=await bookDocModel.findOneAndUpdate({mobilePat:req.params.mobilePat},body).exec()
+    if(!doc){
+        return res.status(400).send("notfound")
+
+    }
+    res.status(200).send('succsess updating')
+
+}
+
+
+
+
+
+
+
+
+module.exports={newaccount,login,getDoctors,showBooking,updateaccount};
