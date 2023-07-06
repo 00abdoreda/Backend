@@ -14,7 +14,8 @@ let sessionChecker = (req, res, next) => {
         return res.status(403).send('forbidden....')
     }
   };
-
+//get dactive doctor
+route.get('/getalldoctorsdactive',sessionChecker,doctorcontroller.getallaccountdactive)
   //get doctore account
   route.get('/getdoctoreaccount/:mobile',sessionChecker,doctorcontroller.getaccountforadmin)
   //get all doctors
@@ -45,3 +46,4 @@ let sessionChecker = (req, res, next) => {
   route.patch('/activeadmin',sessionChecker,admincontroller.activeadmin)
   //dactive admin
   route.patch('/dactiveadmin',sessionChecker,admincontroller.dactiveadmin)
+

@@ -27,38 +27,38 @@ const newSchedule = new schedual({
     doctormobile: req.body.mobile,
     sat: false,
     sattime: {
-      startTime: new Date('2023-06-26T09:00:00Z'),
-      endTime: new Date('2023-06-26T17:00:00Z'),
+      startTime: '20:58',
+      endTime: '20:58',
     },
     sun: false,
     suntime: {
-      startTime: new Date('2023-06-27T09:00:00Z'),
-      endTime: new Date('2023-06-27T17:00:00Z'),
+        startTime: '20:58',
+        endTime: '20:58',
     },
     mon: false,
     montime: {
-      startTime: new Date('2023-06-28T09:00:00Z'),
-      endTime: new Date('2023-06-28T17:00:00Z'),
+        startTime: '20:58',
+        endTime: '20:58',
     },
     tue: false,
     tuetime: {
-      startTime: new Date('2023-06-29T09:00:00Z'),
-      endTime: new Date('2023-06-29T17:00:00Z'),
+        startTime: '20:58',
+        endTime: '20:58',
     },
     wen: false,
     wentime: {
-      startTime: new Date('2023-06-30T09:00:00Z'),
-      endTime: new Date('2023-06-30T17:00:00Z'),
+        startTime: '20:58',
+        endTime: '20:58',
     },
     thu: false,
     thutime: {
-      startTime: new Date('2023-07-01T09:00:00Z'),
-      endTime: new Date('2023-07-01T17:00:00Z'),
+        startTime: '20:58',
+        endTime: '20:58',
     },
     fri: false,
     fritime: {
-      startTime: new Date('2023-07-02T09:00:00Z'),
-      endTime: new Date('2023-07-02T17:00:00Z'),
+        startTime: '20:58',
+        endTime: '20:58',
     },
   });
 
@@ -180,5 +180,13 @@ let getallaccount=async(req,res)=>{
     }
     res.status(200).send(doc)
 }
+let getallaccountdactive=async(req,res)=>{
+    const doc=await doctor.find({isactive:false}).exec()
+    if(!doc){
+        return res.status(400).send("notfound")
 
-module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin,updatetimetableforadmin,getallaccount}
+    }
+    res.status(200).send(doc)
+}
+
+module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin,updatetimetableforadmin,getallaccount,getallaccountdactive}

@@ -61,14 +61,20 @@ app.use(helmet({
     // middleware function to check for logged-in users
 app.get('/sessioncheck', (req, res, next) => {
   if (req.session.user && req.cookies.user_sid) {
+    if(req.session.user.isadmin==true){
+      res.status(200).send('user is admin')
+    }else{
+      res.status(201).send('user is doctor')
+    }
+
     
    
-    res.status(200).send('user login succuess')
+   
      
     
   } else {
     
-    res.status(503).send('user alrady login')
+    res.status(403).send('login....')
   }
 });
 
@@ -118,6 +124,15 @@ const adminroute=require("./Routes/AdminRout")
 app.use('/admin',adminroute)
 const mobileroute=require("./Routes/MobileRout")
 app.use('/api',mobileroute)
+
+app.get("/logout", (req, res) => {
+  if (req.session.user && req.cookies.user_sid) {
+    res.clearCookie("user_sid");
+    res.status(200).send('success logout')
+  } else {
+    res.status(403).send('forbidden')
+  }
+  });
 
   app.use(function (req, res, next) {
     res.status(404).send("Sorry can't find that!");

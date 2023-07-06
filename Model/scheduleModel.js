@@ -3,13 +3,25 @@ const mongoose = require('mongoose')
 const startAndEndSchema= new mongoose.Schema(
     {
         startTime:{
-            type:Date,
-            required:true
-        },
+            type: String,
+            required: true,
+            validate: {
+              validator: function(v) {
+                return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+              },
+              message: props => `${props.value} is not a valid time format (HH:mm)`
+            }
+          },
         endTime:{
-            type:Date,
-            required:true
-        }
+            type: String,
+            required: true,
+            validate: {
+              validator: function(v) {
+                return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+              },
+              message: props => `${props.value} is not a valid time format (HH:mm)`
+            }
+          }
     }
 )
 
@@ -23,7 +35,7 @@ const scheduleSchema= new mongoose.Schema({
         type:Boolean,
      
     },
-    sattime:startAndEndSchema,
+    sattime:startAndEndSchema,//{startTime:,endTime:''}
     sun:{
         type:Boolean,
        

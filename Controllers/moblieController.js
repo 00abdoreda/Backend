@@ -159,7 +159,7 @@ const date=new Date(nextDate);
 
 
      const doctor=await schedulemodel.findOne({doctormobile:req.body.mobileDoc}).exec();
-     const myopj=new Date(nextDate)
+     let myopj='20:58'
      switch (day) {
         case 'sat':
             myopj=doctor.sattime.endTime; 
@@ -187,17 +187,69 @@ const date=new Date(nextDate);
             myopj=doctor.sattime.endTime;
             break;
     }
+    //find if start time in book
+    const starttime1= await bookDocModel.findOne({date:date}).sort({time:-1}).exec()
+    let fntime='20:58';
+    if(!starttime1){
+        switch (day) {
+            case 'sat':
+                fntime=doctor.sattime.startTime; 
+                break;
+            case 'sun':
+                fntime=doctor.suntime.startTime;
+                break;
+             case 'mon':
+                fntime=doctor.montime.startTime;
+                break;
+                case 'tue':
+                    fntime=doctor.tuetime.startTime;
+                break;
+                case 'wen':
+                    fntime=doctor.wentime.startTime;
+                break;
+                case 'thu':
+                    fntime=doctor.thutime.startTime;
+                break;
+                case 'fri':
+                    fntime=doctor.fritime.startTime;
+                break;
+        
+            default:
+                fntime=doctor.sattime.startTime;
+                break;
+        }
+        const [endHours, endMinutes] = myopj.split(':').map(Number);
+        const timeee = new Date(`1970-01-01T${fntime}:00.000Z`);
+        if( timeee.getHours() === endHours && timeee.getMinutes() === endMinutes){
+            return res.status(203).send("Bussy....")
+        }else{
+            const [hours, minutes] = fntime.split(':').map(Number);
+            const dateee = new Date();
+            dateee.setHours(hours, minutes + 30, 0, 0);
+            fntime=`${dateee.getHours().toString().padStart(2, '0')}:${dateee.getMinutes().toString().padStart(2, '0')}`
+
+        }
+
+    }else{
+        fntime=starttime1.time
+    }
+
 
 
     const {mobileDoc,mobilePat} = req.body
-    const book=new bookDocModel({mobileDoc,mobilePat,date:date})
+    const book=new bookDocModel({mobileDoc,mobilePat,date:date,time:fntime})
     //mobilepat:req.body.mobilepat
     //date:
 
 
-    // book.save().then(()=>{
-    //     res.status(200).send("booking successfull")
-    // })
+    book.save().then(()=>{
+        res.status(200).send(book)
+    }).catch((err)=>{
+        for(let e in err.errors){
+            console.log(err.errors[e].message)
+            res.status(400).send("Bad Request...")
+        }
+    })
     
 }
 
@@ -227,6 +279,39 @@ let updateaccount=async(req,res)=>{
 
 }
 
+let ratedoctor=async(req,res)=>{
+    const doc=await doctormodel.findOne({mobile:req.body.mobile}).exec()
+    if(!doc){
+        return res.status(404).send('not found')
+    }
+    let newrate=0
+    if(doc.ratearr.length==0){
+        newrate=req.body.rate
+        let newratearr=doc.ratearr
+        newratearr.push(newrate)
+        const doc2=await doctormodel.findOneAndUpdate({mobile:req.body.mobile},{rate:newrate,ratearr:newratearr}).exec()
+        if(!doc2){
+            return res.status(404).send('not found')
+        }
+        res.status(200).send("rate success")
+
+
+    }else{
+        let newratearr=doc.ratearr
+        newratearr.push(req.body.rate)
+        const sum =  newratearr.reduce((acc, curr) => acc + curr, 0);
+        const avg = sum /  newratearr.length;
+        newrate=avg
+        const doc3=await doctormodel.findOneAndUpdate({mobile:req.body.mobile},{rate:newrate,ratearr:newratearr}).exec()
+        if(!doc3){
+            return res.status(404).send('not found')
+        }
+        res.status(200).send("rate success")
+
+
+
+    }
+}
 
 
 
@@ -234,4 +319,6 @@ let updateaccount=async(req,res)=>{
 
 
 
-module.exports={newaccount,login,getDoctors,showBooking,updateaccount};
+
+
+module.exports={newaccount,login,getDoctors,showBooking,updateaccount,booking,ratedoctor};

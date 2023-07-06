@@ -60,6 +60,7 @@ const doctorSchema= new mongoose.Schema(
         },
         shortBiography:{
             type:String,
+            required:true
         },
         gender:{
             type:String,
@@ -81,6 +82,11 @@ const doctorSchema= new mongoose.Schema(
         rate:{
             type:Number,
             required:true
+        },
+        ratearr:{
+            type:Array,
+            required:true,
+            
         }
 
 
