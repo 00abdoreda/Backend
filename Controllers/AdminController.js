@@ -4,7 +4,7 @@ const admin = require('../Model/adminModel')
 const path=require("path");
 
 let newaccount=async(req,res)=>{
-    res.set("Access-Control-Allow-Origin","*")
+    //res.set("Access-Control-Allow-Origin","*")
 
     const std = await doctor.findOne({mobile:req.body.mobile,email:req.body.email}).exec()
     const std2 = await admin.findOne({mobile:req.body.mobile,email:req.body.email}).exec()

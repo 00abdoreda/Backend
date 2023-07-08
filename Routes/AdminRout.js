@@ -12,6 +12,7 @@ let sessionChecker = (req, res, next) => {
           next()
     } else {
         return res.status(403).send('forbidden....')
+        
     }
   };
 //get dactive doctor

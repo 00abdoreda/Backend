@@ -13,15 +13,35 @@ const ejs = require('ejs')
 const http = require('http')
 const doctor=require('./Model/DoctorModel')
 const admin=require('./Model/adminModel')
+const cors = require('cors')
+const https=require('https')
+const fs =require('fs')
 
+app.use(cors({
+  origin: 'http://localhost:3001', // set the allowed origin
+  // methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH', 'OPTIONS'], // set the allowed HTTP methods
+  // allowedHeaders: ['Content-Type'], // set the allowed headers
+   credentials: true // set the allowed credentials
+}));
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "https://mohamedshoman00.github.io"); // set the allowed origin
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // set the allowed HTTP methods
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"); // set the allowed headers
+//   res.header("Access-Control-Allow-Credentials", "true"); // set the allowed credentials
+//   next();
+// });
 // set our application port
 app.set("port", 4009);
+
 // set morgan to log info about our requests for development use.
 app.use(morgan("dev"));
-
+app.use(express.json())
+app.use(cookieParser());
+app.set("trust proxy", 1); 
 // initialize body-parser to parse incoming parameters requests to req.body
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 mongoos.connect("mongodb://0.0.0.0:27017/canser",{
 
 useNewUrlParser:true,
@@ -37,21 +57,30 @@ console.log(err)
 
 })
 app.use(helmet({
+    
     contentSecurityPolicy: false,
+    frameguard: false
   }))
-  app.use(cookieParser());
+
 
   app.use(
     session({
       key: "user_sid",
-      secret: process.env.zoze,
+      secret:process.env.zoze,
       resave: false,
       saveUninitialized: false,
+      
       cookie: {
-        expires: 1800000,
+      sameSite: "lax",
+      secure:false,
+        
+      maxAge: 8600000
+
       },
+     
     })
   );
+
   app.use((req, res, next) => {
     if (req.cookies.user_sid && !req.session.user) {
       res.clearCookie("user_sid");
@@ -62,9 +91,9 @@ app.use(helmet({
 app.get('/sessioncheck', (req, res, next) => {
   if (req.session.user && req.cookies.user_sid) {
     if(req.session.user.isadmin==true){
-      res.status(200).send('user is admin')
+      res.status(201).send('user is admin')
     }else{
-      res.status(201).send('user is doctor')
+      res.status(200).send('user is doctor')
     }
 
     
@@ -73,31 +102,37 @@ app.get('/sessioncheck', (req, res, next) => {
      
     
   } else {
+    console.log(req.session.user);
     
-    res.status(403).send('login....')
+    res.status(203).send('login....')
   }
 });
 
 app.post('/login',async(req,res)=>{
+  res.set("Access-Control-Allow-Origin","http://localhost:3001")
   try {
-    const user = await doctor.findOne({ email:req.body.email },{isactive:true}).exec();
-    const adminuser=await admin.findOne({ email:req.body.email },{isactive:true}).exec();
-    if(user){
-      const comparpass = await bcrypt.compare(req.body.password, user.password)
+    const userr = await doctor.findOne({ email:req.body.email,isactive:true }).exec();
+    const adminuser=await admin.findOne({ email:req.body.email ,isactive:true}).exec();
+    if(userr){
+      
+      console.log(userr.password);
+      let comparpass = await bcrypt.compare(req.body.password, userr.password)
       if (!comparpass) {
         return res.status(403).send("invaild username or password");
       
     }
     
-      req.session.user = user;
+      req.session.user = userr;
+      console.log(req.session.user);
+      // res.header("Content-Type", "application/json");
+   
       res.status(200).send('success user')
+      
     }
     else if(adminuser){
-      const comparpass2 = await bcrypt.compare(req.body.password, adminuser.password)
+      let comparpass2 = await bcrypt.compare(req.body.password, adminuser.password)
       if (!comparpass2) {
         return res.status(403).send("invaild username or password");
-          
-       
     }
     
       req.session.user = adminuser;
@@ -108,6 +143,7 @@ app.post('/login',async(req,res)=>{
    
 } catch (error) {
   console.log(error)
+  return res.status(404).send("not found");
 }
 
 })
@@ -128,19 +164,21 @@ app.use('/api',mobileroute)
 app.get("/logout", (req, res) => {
   if (req.session.user && req.cookies.user_sid) {
     res.clearCookie("user_sid");
-    res.status(200).send('success logout')
+    res.status(203).send('success logout')
   } else {
     res.status(403).send('forbidden')
   }
   });
-
   app.use(function (req, res, next) {
     res.status(404).send("Sorry can't find that!");
     });
-   
+    const httpsOptions = {
+      key: fs.readFileSync('./security/cert.key'),
+      cert: fs.readFileSync('./security/cert.pem')
+  }
+  const server = http.createServer(app)
+      .listen(4009,'192.168.1.4', () => {
+          console.log('server running at ' + 4009)
+      })
 
-    const httpServer=http.createServer(app)
-// start the express server
-httpServer.listen(app.get("port"), () =>
-console.log(`App started on port ${app.get("port")}`)
-);
+

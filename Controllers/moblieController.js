@@ -8,7 +8,7 @@ const bookDocModel=require('../Model/bookDocModel')
 
 // @desc create newaccount for patient
 let newaccount=async(req,res)=>{
-    res.set("Access-Control-Allow-Origin","*")
+    //res.set("Access-Control-Allow-Origin","*")
 
     const patient = await patientmodel.findOne({mobile:req.body.mobile,email:req.body.email}).exec()
  
@@ -35,7 +35,7 @@ let newaccount=async(req,res)=>{
 
 // @desc login for patient
 let login=async(req,res)=>{
-    res.set("Access-Control-Allow-Origin","*")
+    //res.set("Access-Control-Allow-Origin","*")
 
     const patient = await patientmodel.findOne({ email:req.body.email },{isactive:true}).exec()
 

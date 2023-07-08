@@ -1,7 +1,7 @@
 const patientmodel=require('../Model/patientModel')
 
 let newaccount=async(req,res)=>{
-    res.set("Access-Control-Allow-Origin","*")
+    //res.set("Access-Control-Allow-Origin","*")
 
     const std = await patientmodel.findOne({mobile:req.body.mobile,email:req.body.email}).exec()
  
