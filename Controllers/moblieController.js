@@ -37,7 +37,7 @@ let newaccount=async(req,res)=>{
 let login=async(req,res)=>{
     //res.set("Access-Control-Allow-Origin","*")
 
-    const patient = await patientmodel.findOne({ email:req.body.email },{isactive:true}).exec()
+    const patient = await patientmodel.findOne({ email:req.body.email,isactive:true }).exec()
 
     if(patient){
         const comparpass = await bcrypt.compare(req.body.password, patient.password)
@@ -47,7 +47,7 @@ let login=async(req,res)=>{
       }
       
       
-        res.status(200).send('login successful')
+        res.status(200).send(patient.mobile)
       }else{
         return res.status(404).send("not found");
       }
@@ -60,47 +60,48 @@ let login=async(req,res)=>{
 // @desc getDoctors and filter it by address and day
 let getDoctors = async(req, res)=>{
    let filterObject={address: req.params.address}
-   const doctors=await doctormodel.find(filterObject).sort({rate:-1}).exec()
+   const doctors=await doctormodel.find(filterObject,{ratearr:0}).sort({rate:-1}).exec()
 
    if(!doctors){
      return res.status(404).send("not found")
    }
 
 
-   const newdoctor=doctors.filter(async(item)=>{
+   const newdoctor=await doctors.filter(async(item)=>{
     
-    const schedule=await schedulemodel.findOne({doctormobile:item.mobile}).exec();
+    const schedule=await schedulemodel.findOne({doctormobile:item.mobile});
     const day =req.params.day
-    const flag=false;
+    let flag=false;
+    console.log(req.params.day);
     switch (day) {
         case 'sat':
-            if(schedule.sat==true) flag=true;
+           return await !schedule.sat
             break;
         case 'sun':
-            if(schedule.sun==true) flag=true;
+            return await !schedule.sun
             break;
          case 'mon':
-             if(schedule.mon==true) flag=true;
+            return await !schedule.mon
             break;
             case 'tue':
-             if(schedule.tue==true) flag=true;
+                return await !schedule.thu
             break;
             case 'wen':
-             if(schedule.wen==true) flag=true;
+                return await !schedule.wen
             break;
             case 'thu':
-             if(schedule.thu==true) flag=true;
+                return  await !schedule.thu
             break;
             case 'fri':
-             if(schedule.fri==true) flag=true;
+                return await !schedule.fri
             break;
     
         default:
-            flag=false;
+            return await true
             break;
     }
 
-    return flag;
+  
      
    })
 
@@ -270,7 +271,7 @@ let showBooking=async(req,res)=>{
 //@desc update account
 let updateaccount=async(req,res)=>{
     const body=req.body
-    const doc=await bookDocModel.findOneAndUpdate({mobilePat:req.params.mobilePat},body).exec()
+    const doc=await patientmodel.findOneAndUpdate({mobile:req.params.mobilePat},body).exec()
     if(!doc){
         return res.status(400).send("notfound")
 

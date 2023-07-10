@@ -91,6 +91,7 @@ let getaccount=async(req,res)=>{
         return res.status(400).send("notfound")
 
     }
+    
     res.status(200).send(doc)
 }
 
@@ -113,7 +114,7 @@ let gettimetableforuser=async(req,res)=>{
 }
 
 let gettimetableforadmin=async(req,res)=>{
-    const doc=await schedual.findOne({mobile:req.params.mobile}).exec()
+    const doc=await schedual.findOne({doctormobile:req.params.mobile}).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
@@ -128,7 +129,9 @@ let updateaccount=async(req,res)=>{
         return res.status(400).send("notfound")
 
     }
-    res.status(200).send('succsess updating')
+    const doc2=await doctor.findById(req.session.user._id).exec()
+    req.session.user=doc2
+    res.status(200).send(doc2)
 
 }
 let updatetimetable=async(req,res)=>{
