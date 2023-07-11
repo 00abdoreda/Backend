@@ -29,6 +29,8 @@ route.get('/getalldoctorsdactive',sessionChecker,doctorcontroller.getallaccountd
   route.patch('/activedoctor/:mobile',sessionChecker,doctorcontroller.activedoctore)
   //dactive doctore
   route.patch('/dactivedoctor/:mobile',sessionChecker,doctorcontroller.dactivedoctore)
+    //get appoint
+    route.get('/getappointment/:mobile',sessionChecker,doctorcontroller.getapointmentlistforadmin)
 
   //delete patinet account
   route.delete('/deletepatienaccount/:id',sessionChecker,patientcontroller.deleteaccount)

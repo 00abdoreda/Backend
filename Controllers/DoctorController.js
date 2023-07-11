@@ -2,6 +2,8 @@ const doctor=require('../Model/DoctorModel')
 const schedual=require('../Model/scheduleModel')
 const admin = require('../Model/adminModel')
 const path=require("path");
+const bookDoc = require('../Model/bookDocModel');
+const patientmodel = require('../Model/patientModel');
 
 let newaccount=async(req,res)=>{
     res.set("Access-Control-Allow-Origin","*")
@@ -105,7 +107,7 @@ let getaccountforadmin=async(req,res)=>{
 }
 
 let gettimetableforuser=async(req,res)=>{
-    const doc=await schedual.findOne({mobile:req.session.user.mobile}).exec()
+    const doc=await schedual.findOne({doctormobile:req.session.user.mobile}).exec()
     if(!doc){
         return res.status(400).send("notfound")
 
@@ -141,7 +143,7 @@ let updatetimetable=async(req,res)=>{
         return res.status(400).send("notfound")
 
     }
-    res.status(200).send('succsess updating')
+    res.status(200).send(doc)
 
 }
 let updatetimetableforadmin=async(req,res)=>{
@@ -192,4 +194,60 @@ let getallaccountdactive=async(req,res)=>{
     res.status(200).send(doc)
 }
 
-module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin,updatetimetableforadmin,getallaccount,getallaccountdactive}
+let getapointmentlist =async(req,res)=>{
+const std=await bookDoc.find({mobileDoc:req.session.user.mobile}).exec()
+if(!std){
+    return res.status(404).send('notfound')
+}
+
+const std2 =await Promise.all( std.map(person => ({ mobile: person.mobilePat })));
+const std3 =await Promise.all( std.map(person => ({ mobile: person.mobilePat,time:person.time,date:person.date })));
+
+const pats = await patientmodel.aggregate([
+    { $match: { mobile: { $in: std2 } } },
+    { $addFields: { order: { $indexOfArray: [std2, '$mobile'] } } },
+    { $sort: { order: 1 } }
+  ]);
+  const result =await Promise.all( std3.map((appt, index) => ({
+    mobile: appt.mobile,
+    time: appt.time,
+    date: appt.date,
+    firstName: pats[index].firstName,
+    lastName: pats[index].lastName,
+  })));
+  return res.status(200).send(result)
+
+
+
+
+}
+
+let getapointmentlistforadmin =async(req,res)=>{
+    const std=await bookDoc.find({mobileDoc:req.params.mobile}).exec()
+    if(!std){
+        return res.status(404).send('notfound')
+    }
+    
+    const std2 =await Promise.all( std.map(person => ({ mobile: person.mobilePat })));
+    const std3 =await Promise.all( std.map(person => ({ mobile: person.mobilePat,time:person.time,date:person.date })));
+    
+    const pats = await patientmodel.aggregate([
+        { $match: { mobile: { $in: std2 } } },
+        { $addFields: { order: { $indexOfArray: [std2, '$mobile'] } } },
+        { $sort: { order: 1 } }
+      ]);
+      const result =await Promise.all( std3.map((appt, index) => ({
+        mobile: appt.mobile,
+        time: appt.time,
+        date: appt.date,
+        firstName: pats[index].firstName,
+        lastName: pats[index].lastName,
+      })));
+      return res.status(200).send(result)
+    
+    
+    
+    
+    }
+
+module.exports={newaccount,getaccount,updateaccount,updatetimetable,activedoctore,dactivedoctore,gettimetableforadmin,gettimetableforuser,getaccountforadmin,updatetimetableforadmin,getallaccount,getallaccountdactive,getapointmentlist,getapointmentlistforadmin}

@@ -24,4 +24,6 @@ let sessionChecker = (req, res, next) => {
   route.patch('/updateaccount',sessionChecker,doctorcontroller.updateaccount)
   //update timetable
   route.patch('/updatetimetable',sessionChecker,doctorcontroller.updatetimetable)
+  //get appoint
+  route.get('/getappointment',sessionChecker,doctorcontroller.getapointmentlist)
   

@@ -58,59 +58,51 @@ let login=async(req,res)=>{
 
 
 // @desc getDoctors and filter it by address and day
-let getDoctors = async(req, res)=>{
-   let filterObject={address: req.params.address}
-   const doctors=await doctormodel.find(filterObject,{ratearr:0}).sort({rate:-1}).exec()
-
-   if(!doctors){
-     return res.status(404).send("not found")
-   }
-
-
-   const newdoctor=await doctors.filter(async(item)=>{
-    
-    const schedule=await schedulemodel.findOne({doctormobile:item.mobile});
-    const day =req.params.day
-    let flag=false;
-    console.log(req.params.day);
-    switch (day) {
-        case 'sat':
-           return await !schedule.sat
-            break;
-        case 'sun':
-            return await !schedule.sun
-            break;
-         case 'mon':
-            return await !schedule.mon
-            break;
-            case 'tue':
-                return await !schedule.thu
-            break;
-            case 'wen':
-                return await !schedule.wen
-            break;
-            case 'thu':
-                return  await !schedule.thu
-            break;
-            case 'fri':
-                return await !schedule.fri
-            break;
-    
-        default:
-            return await true
-            break;
-    }
-
+let getDoctors = async(req, res) => {
+    let filterObject = { address: req.params.address };
+    const doctors = await doctormodel.find(filterObject, { ratearr: 0 }).sort({ rate: -1 }).exec();
   
-     
-   })
-
-   if(newdoctor){
-    res.status(200).send(newdoctor)
-   }else{
-    res.status(404).send("not found")
-   }
-}
+    if (!doctors || doctors.length === 0) {
+      return res.status(404).send("not found");
+    }
+  
+    const day = req.params.day;
+  
+    const filteredDoctors = await Promise.all(doctors.map(async (doctor) => {
+      const schedule = await schedulemodel.findOne({ doctormobile: doctor.mobile });
+      switch (day) {
+        case 'sat':
+          if (schedule.sat) return doctor;
+          break;
+        case 'sun':
+          if (schedule.sun) return doctor;
+          break;
+        case 'mon':
+          if (schedule.mon) return doctor;
+          break;
+        case 'tue':
+          if (schedule.tue) return doctor;
+          break;
+        case 'wen':
+          if (schedule.wen) return doctor;
+          break;
+        case 'thu':
+          if (schedule.thu) return doctor;
+          break;
+        case 'fri':
+          if (schedule.fri) return doctor;
+          break;
+      }
+    }));
+  
+    const newDoctors = filteredDoctors.filter(doctor => doctor !== undefined);
+  
+    if (newDoctors.length > 0) {
+      res.status(200).send(newDoctors);
+    } else {
+      res.status(404).send("not found");
+    }
+  }
 
 // @desc booking  
 let booking=async(req,res)=>{
