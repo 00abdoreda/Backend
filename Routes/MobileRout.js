@@ -20,5 +20,7 @@ route.post('/bookdoctor',mobile.booking)
 route.patch('/reatedoctor',mobile.ratedoctor)
 //getaccount
 route.get('/getaccount/:mobile',patient.getaccount)
+//get appoint
+route.get('/getappoint/:mobile',mobile.getappointment)
 
 

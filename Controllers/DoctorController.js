@@ -203,17 +203,19 @@ if(!std){
 const std2 =await Promise.all( std.map(person => ({ mobile: person.mobilePat })));
 const std3 =await Promise.all( std.map(person => ({ mobile: person.mobilePat,time:person.time,date:person.date })));
 
-const pats = await patientmodel.aggregate([
-    { $match: { mobile: { $in: std2 } } },
-    { $addFields: { order: { $indexOfArray: [std2, '$mobile'] } } },
-    { $sort: { order: 1 } }
-  ]);
+let newarr=[]
+
+for(i of std2){
+    const std4=await patientmodel.findOne({mobile:i.mobile})
+    newarr.push(std4)
+    
+}
   const result =await Promise.all( std3.map((appt, index) => ({
     mobile: appt.mobile,
     time: appt.time,
     date: appt.date,
-    firstName: pats[index].firstName,
-    lastName: pats[index].lastName,
+    firstName: newarr[index].firstName,
+    lastName: newarr[index].lastName,
   })));
   return res.status(200).send(result)
 
@@ -230,18 +232,18 @@ let getapointmentlistforadmin =async(req,res)=>{
     
     const std2 =await Promise.all( std.map(person => ({ mobile: person.mobilePat })));
     const std3 =await Promise.all( std.map(person => ({ mobile: person.mobilePat,time:person.time,date:person.date })));
-    
-    const pats = await patientmodel.aggregate([
-        { $match: { mobile: { $in: std2 } } },
-        { $addFields: { order: { $indexOfArray: [std2, '$mobile'] } } },
-        { $sort: { order: 1 } }
-      ]);
+    let newarr=[]
+    for(i of std2){
+        const std4=await patientmodel.findOne({mobile:i.mobile})
+        newarr.push(std4)
+        
+    }
       const result =await Promise.all( std3.map((appt, index) => ({
         mobile: appt.mobile,
         time: appt.time,
         date: appt.date,
-        firstName: pats[index].firstName,
-        lastName: pats[index].lastName,
+        firstName: newarr[index].firstName,
+        lastName: newarr[index].lastName,
       })));
       return res.status(200).send(result)
     

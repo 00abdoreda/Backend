@@ -63,7 +63,7 @@ let getDoctors = async(req, res) => {
     const doctors = await doctormodel.find(filterObject, { ratearr: 0 }).sort({ rate: -1 }).exec();
   
     if (!doctors || doctors.length === 0) {
-      return res.status(404).send("not found");
+      return res.status(200).send(doctors);
     }
   
     const day = req.params.day;
@@ -97,17 +97,17 @@ let getDoctors = async(req, res) => {
   
     const newDoctors = filteredDoctors.filter(doctor => doctor !== undefined);
   
-    if (newDoctors.length > 0) {
+    // if (newDoctors.length > 0) {
       res.status(200).send(newDoctors);
-    } else {
-      res.status(404).send("not found");
-    }
+    // } else {
+    //   res.status(404).send("not found");
+    // }
   }
 
 // @desc booking  
 let booking=async(req,res)=>{
     const day=req.body.day;
-    const dayOfWeek = 1; 
+    let dayOfWeek = 1; 
 
     switch (day) {
         case 'sat':
@@ -183,7 +183,52 @@ const date=new Date(nextDate);
     //find if start time in book
     const starttime1= await bookDocModel.findOne({date:date}).sort({time:-1}).exec()
     let fntime='20:58';
-    if(!starttime1){
+    if(starttime1){
+      
+      
+        // const [endHours, endMinutes] = myopj.split(':').map(Number);
+        // const timeee = new Date(`1970-01-01T${starttime1.time}:00.000Z`);
+        // if( timeee.getHours() === endHours && timeee.getMinutes() === endMinutes){
+        //     return res.status(203).send("Bussy....")
+        // }else{
+        //     const [hours, minutes] = fntime.split(':').map(Number);
+        //     const dateee = new Date();
+        //     dateee.setHours(hours, minutes + 30, 0, 0);
+        //     fntime=`${dateee.getHours().toString().padStart(2, '0')}:${dateee.getMinutes().toString().padStart(2, '0')}`
+
+        // }
+
+          // Split the string into hours and minutes
+   // Split the start time string into hours and minutes
+   const [startHours, startMinutes] = starttime1.time.split(':').map(Number);
+
+   // Split the stop time string into hours and minutes
+   const [stopHours, stopMinutes] = myopj.split(':').map(Number);
+ 
+   // Calculate the total number of minutes for the start time
+   const startTotalMinutes = startHours * 60 + startMinutes;
+ 
+   // Calculate the total number of minutes for the stop time
+   const stopTotalMinutes = stopHours * 60 + stopMinutes;
+ 
+   // Add 30 minutes to the start time
+   let newTotalMinutes = startTotalMinutes + 30;
+ 
+   // If the new time exceeds the stop time, return the stop time
+   if (newTotalMinutes >= stopTotalMinutes) {
+    //  return stopTime;
+    return res.status(201).send('bussy...')
+   }
+ 
+   // Calculate the hours and minutes for the new time
+   const newHours = Math.floor(newTotalMinutes / 60);
+   const newMinutes = newTotalMinutes % 60;
+ 
+   // Format the new time as a string
+   const newTimeStr = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+  fntime=newTimeStr
+
+    }else{
         switch (day) {
             case 'sat':
                 fntime=doctor.sattime.startTime; 
@@ -211,20 +256,7 @@ const date=new Date(nextDate);
                 fntime=doctor.sattime.startTime;
                 break;
         }
-        const [endHours, endMinutes] = myopj.split(':').map(Number);
-        const timeee = new Date(`1970-01-01T${fntime}:00.000Z`);
-        if( timeee.getHours() === endHours && timeee.getMinutes() === endMinutes){
-            return res.status(203).send("Bussy....")
-        }else{
-            const [hours, minutes] = fntime.split(':').map(Number);
-            const dateee = new Date();
-            dateee.setHours(hours, minutes + 30, 0, 0);
-            fntime=`${dateee.getHours().toString().padStart(2, '0')}:${dateee.getMinutes().toString().padStart(2, '0')}`
-
-        }
-
-    }else{
-        fntime=starttime1.time
+        
     }
 
 
@@ -306,6 +338,37 @@ let ratedoctor=async(req,res)=>{
     }
 }
 
+let getappointment=async(req,res)=>{
+    const booking= await bookDocModel.find({mobilePat:req.params.mobile}).sort({date:-1,time:-1}).exec()
+    if(!booking){
+        return res.status(404).send('notfound')
+    }
+    const std2 =await Promise.all( booking.map(person => ({ mobile: person.mobileDoc })));
+    const std3 =await Promise.all( booking.map(person => ({ mobile: person.mobileDoc,time:person.time,date:person.date })));
+    let newarr=[]
+
+    for(i of std2){
+        const std4=await doctormodel.findOne({mobile:i.mobile})
+        newarr.push(std4)
+        
+    }
+
+    // const pats = await  doctormodel.aggregate([
+    //     { $match: { mobile: { $in: std2 } } },
+    //     { $addFields: { order: { $indexOfArray: [std2, '$mobile'] } } },
+    //     { $sort: { order: 1 } }
+    //   ]);
+      const result =await Promise.all( std3.map((appt, index) => ({
+        mobile: appt.mobile,
+        time: appt.time,
+        date: appt.date,
+         firstName: newarr[index].firstName,
+         lastName: newarr[index].lastName,
+      })));
+    
+      return res.status(200).send(result)
+
+}
 
 
 
@@ -314,4 +377,5 @@ let ratedoctor=async(req,res)=>{
 
 
 
-module.exports={newaccount,login,getDoctors,showBooking,updateaccount,booking,ratedoctor};
+
+module.exports={newaccount,login,getDoctors,showBooking,updateaccount,booking,ratedoctor,getappointment};
