@@ -177,7 +177,7 @@ app.get("/logout", (req, res) => {
       cert: fs.readFileSync('./security/cert.pem')
   }
   const server = http.createServer(app)
-      .listen(8000,'192.168.1.4', () => {
+      .listen(8000,'192.168.124.111', () => {
           console.log('server running at ' + 8000)
       })
 

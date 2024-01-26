@@ -214,6 +214,7 @@ for(i of std2){
     mobile: appt.mobile,
     time: appt.time,
     date: appt.date,
+ 
     firstName: newarr[index].firstName,
     lastName: newarr[index].lastName,
   })));
@@ -232,7 +233,9 @@ let getapointmentlistforadmin =async(req,res)=>{
     
     const std2 =await Promise.all( std.map(person => ({ mobile: person.mobilePat })));
     const std3 =await Promise.all( std.map(person => ({ mobile: person.mobilePat,time:person.time,date:person.date })));
+
     let newarr=[]
+    
     for(i of std2){
         const std4=await patientmodel.findOne({mobile:i.mobile})
         newarr.push(std4)
@@ -242,6 +245,7 @@ let getapointmentlistforadmin =async(req,res)=>{
         mobile: appt.mobile,
         time: appt.time,
         date: appt.date,
+  
         firstName: newarr[index].firstName,
         lastName: newarr[index].lastName,
       })));
